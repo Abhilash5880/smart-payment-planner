@@ -147,6 +147,51 @@ The scoring will consider:
 - validity of `spending_changes_needed`
 - usefulness and consistency of `decision_explanation`
 
+
+### Local Validation Results
+
+The final solver was validated against the 25 labeled samples and the generated 250-request evaluation output.
+
+#### Labeled sample results
+
+| Field | Exact matches | Accuracy | Failing request IDs |
+|---|---:|---:|---|
+| `amount_safe_to_pay` | 4 / 25 | 16% | `request_02`, `request_03`, `request_04`, `request_05`, `request_06`, `request_07`, `request_08`, `request_10`, `request_11`, `request_13`, `request_14`, `request_15`, `request_17`, `request_18`, `request_19`, `request_20`, `request_21`, `request_22`, `request_23`, `request_24`, `request_25` |
+| `affordability_status` | 19 / 25 | 76% | `request_04`, `request_06`, `request_08`, `request_11`, `request_13`, `request_21` |
+| `recommended_payment_method` | 22 / 25 | 88% | `request_04`, `request_08`, `request_13` |
+| `payment_plan` | 21 / 25 | 84% | `request_04`, `request_08`, `request_13`, `request_19` |
+| `earliest_date_for_full_payment` | 17 / 25 | 68% | `request_04`, `request_06`, `request_08`, `request_11`, `request_13`, `request_17`, `request_19`, `request_21` |
+| `spending_changes_needed` | 22 / 25 | 88% | `request_06`, `request_11`, `request_21` |
+| `decision_explanation` | 0 / 25 | 0% | `request_01` through `request_25` |
+
+**Combined status/method match:** 19 / 25 (76%)
+
+The combined criterion requires both `affordability_status` and `recommended_payment_method` to match.
+
+#### 250-request output audit
+
+| Check | Result |
+|---|---:|
+| Output data rows | 250 |
+| Required request IDs represented exactly once | Pass |
+| Missing IDs | 0 |
+| Duplicate IDs | 0 |
+| Extra IDs not in `requests.csv` | 0 |
+| Required columns present and exact order | Pass |
+| Invalid affordability-status enum values | 0 |
+| Invalid payment-method enum values | 0 |
+| Safe amounts nonnumeric, negative, or above requested amount | 0 |
+| Empty decision explanations | 0 |
+| Malformed spending-change expressions | 0 |
+| More than three spending changes | 0 |
+| Malformed, nonpositive, or nonchronological payment plans | 0 |
+| Partial-payment mechanical consistency errors | 0 |
+| Full-payment/wait plan count errors | 0 |
+| Installment plans not matching a supplied installment option | 0 |
+| Plans incorrectly present for `not_recommended` rows | 0 |
+
+The 250-request output passed the structural and consistency audit. No accuracy percentage is reported for those 250 rows because they do not have publicly available ground-truth labels.
+
 ### Token Usage And Cost Analysis
 
 Your `code.zip` must include one token-usage file:
